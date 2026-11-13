@@ -1,0 +1,1928 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>學霸養成所｜國中全能家教 × 線上互動學習平台</title>
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Google Fonts: Noto Sans TC 與 Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <!-- 引入 Font Awesome 圖示庫 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans TC"', 'Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            blue: '#2563EB',
+                            lightBlue: '#EFF6FF',
+                            yellow: '#FACC15',
+                            orange: '#FB923C',
+                            mint: '#10B981',
+                            purple: '#8B5CF6'
+                        }
+                    },
+                    animation: {
+                        'float': 'float 3s ease-in-out infinite',
+                        'bounce-slow': 'bounce 2.5s infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* 自訂滾動條與細節微調 */
+        body {
+            background-color: #F8FAFC;
+            color: #1E293B;
+        }
+        .blob-shape {
+            border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
+        }
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        /* 3D 翻轉記憶卡特效 */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .transform-style-3d {
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-yellow-300 selection:text-slate-900 bg-slate-50">
+
+    <!-- 手機版頂部簡易導覽列 -->
+    <header class="lg:hidden sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 h-16 flex items-center justify-between">
+        <button type="button" onclick="switchView('home')" class="flex items-center gap-2">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-cyan-400 flex items-center justify-center text-white text-lg shadow-sm">
+                <i class="fa-solid fa-rocket"></i>
+            </div>
+            <span class="font-black text-lg text-slate-800">學霸<span class="text-blue-600">養成所</span></span>
+        </button>
+        <div class="flex items-center gap-2">
+            <span id="mobile-level-text" class="px-2 py-0.5 rounded-lg bg-indigo-600 text-white font-black text-xs">LV.12</span>
+            <span id="mobile-exp-text" class="font-black text-xs text-orange-600">350 EXP</span>
+            <button id="mobile-menu-btn" class="ml-1 p-2 rounded-xl text-slate-600 hover:bg-slate-100">
+                <i class="fa-solid fa-bars text-xl"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- 手機版側邊抽屜選單 -->
+    <div id="mobile-menu" class="hidden lg:hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs" onclick="closeMobileMenu(event)">
+        <div class="w-72 bg-white h-full p-5 shadow-2xl flex flex-col justify-between" onclick="event.stopPropagation()">
+            <div>
+                <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-100">
+                    <span class="font-black text-lg text-slate-800">🚀 學習功能選單</span>
+                    <button type="button" onclick="document.getElementById('mobile-menu').classList.add('hidden')" class="w-8 h-8 rounded-full bg-slate-100 text-slate-600">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <nav class="space-y-1.5">
+                    <button type="button" onclick="switchView('home')" data-view="home" class="side-nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-sm text-left transition-all">
+                        <span class="text-lg">🏠</span> 學習首頁總覽
+                    </button>
+                    <button type="button" onclick="switchView('quiz')" data-view="quiz" class="side-nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-sm text-left transition-all">
+                        <span class="text-lg">🎯</span> 程度小測驗 (版本題庫)
+                    </button>
+                    <button type="button" onclick="switchView('flashcard')" data-view="flashcard" class="side-nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-sm text-left transition-all">
+                        <span class="text-lg">🃏</span> 3D 翻轉記憶卡
+                    </button>
+                    <button type="button" onclick="switchView('focus')" data-view="focus" class="side-nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-sm text-left transition-all">
+                        <span class="text-lg">⏱️</span> 專注力自習室
+                    </button>
+                    <button type="button" onclick="switchView('subjects')" data-view="subjects" class="side-nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-sm text-left transition-all">
+                        <span class="text-lg">📚</span> 全科秒懂筆記
+                    </button>
+                    <button type="button" onclick="switchView('ai')" data-view="ai" class="side-nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-sm text-left transition-all">
+                        <span class="text-lg">🤖</span> AI 24H 伴讀助教
+                    </button>
+                    <button type="button" onclick="switchView('tutors')" data-view="tutors" class="side-nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-sm text-left transition-all">
+                        <span class="text-lg">👨‍🏫</span> 王牌家教團隊
+                    </button>
+                </nav>
+            </div>
+            <button type="button" onclick="switchView('booking')" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black text-sm shadow-lg">
+                🎁 免費預約 1 對 1 試聽
+            </button>
+        </div>
+    </div>
+
+    <!-- 主版面容器：左側固定按鈕導覽列 ＋ 右側分頁式內容區 -->
+    <div class="flex min-h-screen">
+
+        <!-- 桌面版左側固定功能選單 Sidebar -->
+        <aside class="hidden lg:flex lg:flex-col lg:w-72 lg:fixed lg:inset-y-0 bg-white border-r border-slate-200/90 z-30 justify-between p-5 shadow-xs">
+            <div class="space-y-6">
+                <!-- Logo 區 -->
+                <button type="button" onclick="switchView('home')" class="flex items-center gap-3 group w-full text-left px-1">
+                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-blue-600 to-cyan-400 flex items-center justify-center text-white text-xl shadow-md group-hover:rotate-12 transition-transform shrink-0">
+                        <i class="fa-solid fa-rocket"></i>
+                    </div>
+                    <div>
+                        <div class="font-black text-xl tracking-tight text-slate-800">學霸<span class="text-blue-600">養成所</span></div>
+                        <span class="inline-block text-[11px] font-bold px-2 py-0.5 rounded-full bg-yellow-300 text-slate-900">國中全科互動平台</span>
+                    </div>
+                </button>
+
+                <!-- 學生戰力 EXP 狀態卡 -->
+                <div class="bg-gradient-to-br from-indigo-50 to-blue-50 border border-blue-100 rounded-2xl p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span id="nav-level-badge" class="px-2.5 py-0.5 rounded-lg bg-indigo-600 text-white font-black text-xs">LV.12</span>
+                        <span id="nav-exp-text" class="text-xs font-black text-orange-600">350 EXP</span>
+                    </div>
+                    <div class="w-full bg-white h-2.5 rounded-full overflow-hidden border border-blue-100">
+                        <div id="nav-exp-bar" class="bg-gradient-to-r from-amber-400 to-orange-500 h-full transition-all duration-500" style="width: 35%"></div>
+                    </div>
+                    <div class="text-[11px] font-bold text-slate-500 mt-1.5">點擊左側按鍵隨時切換學習模式！</div>
+                </div>
+
+                <!-- 左側主要按鍵導覽區 -->
+                <nav class="space-y-1.5" id="desktop-side-nav">
+                    <button type="button" onclick="switchView('home')" data-view="home" class="side-nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-black text-sm text-left transition-all bg-blue-600 text-white shadow-md shadow-blue-600/20">
+                        <span class="text-lg">🏠</span>
+                        <span>學習首頁總覽</span>
+                    </button>
+
+                    <button type="button" onclick="switchView('quiz')" data-view="quiz" class="side-nav-btn w-full flex items-center justify-between px-4 py-3 rounded-2xl font-bold text-sm text-slate-600 hover:bg-blue-50 hover:text-blue-600 text-left transition-all">
+                        <span class="flex items-center gap-3"><span class="text-lg">🎯</span><span>程度小測驗</span></span>
+                        <span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-orange-100 text-orange-600">版本題庫</span>
+                    </button>
+
+                    <button type="button" onclick="switchView('flashcard')" data-view="flashcard" class="side-nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-sm text-slate-600 hover:bg-blue-50 hover:text-blue-600 text-left transition-all">
+                        <span class="text-lg">🃏</span>
+                        <span>3D 翻轉記憶卡</span>
+                    </button>
+
+                    <button type="button" onclick="switchView('focus')" data-view="focus" class="side-nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-sm text-slate-600 hover:bg-blue-50 hover:text-blue-600 text-left transition-all">
+                        <span class="text-lg">⏱️</span>
+                        <span>專注番茄自習室</span>
+                    </button>
+
+                    <button type="button" onclick="switchView('subjects')" data-view="subjects" class="side-nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-sm text-slate-600 hover:bg-blue-50 hover:text-blue-600 text-left transition-all">
+                        <span class="text-lg">📚</span>
+                        <span>全科秒懂筆記</span>
+                    </button>
+
+                    <button type="button" onclick="switchView('ai')" data-view="ai" class="side-nav-btn w-full flex items-center justify-between px-4 py-3 rounded-2xl font-bold text-sm text-slate-600 hover:bg-blue-50 hover:text-blue-600 text-left transition-all">
+                        <span class="flex items-center gap-3"><span class="text-lg">🤖</span><span>AI 伴讀助教</span></span>
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                    </button>
+
+                    <button type="button" onclick="switchView('tutors')" data-view="tutors" class="side-nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-sm text-slate-600 hover:bg-blue-50 hover:text-blue-600 text-left transition-all">
+                        <span class="text-lg">👨‍🏫</span>
+                        <span>王牌家教團隊</span>
+                    </button>
+                </nav>
+            </div>
+
+            <!-- 左側底部預約試聽按鍵 -->
+            <div class="pt-4 border-t border-slate-100">
+                <button type="button" onclick="switchView('booking')" data-view="booking" class="side-nav-btn w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-slate-950 font-black text-sm shadow-lg shadow-orange-500/20 transition-all active:scale-95 flex items-center justify-center gap-2">
+                    <span>🎁 免費預約 1 對 1 試聽</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- 右側主內容顯示區 (免下滑，點擊左側按鍵直接切換分頁) -->
+        <main class="flex-1 lg:pl-72 flex flex-col min-h-screen">
+
+            <!-- 分頁 1：學習首頁總覽 -->
+            <section id="view-home" class="app-view relative overflow-hidden py-8 lg:py-14 bg-gradient-to-b from-blue-50 via-sky-50/50 to-slate-50 flex-1 flex items-center">
+                <!-- 背景裝飾圓圈 -->
+                <div class="absolute top-10 left-10 w-64 h-64 bg-yellow-300/30 rounded-full blur-3xl -z-10"></div>
+                <div class="absolute bottom-10 right-10 w-80 h-80 bg-cyan-300/30 rounded-full blur-3xl -z-10"></div>
+
+                <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+                    <div class="grid grid-cols-1 xl:grid-cols-12 gap-10 items-center">
+                        <!-- 左側文案 -->
+                        <div class="xl:col-span-7 text-center xl:text-left space-y-6">
+                            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white shadow-sm border border-blue-100 text-blue-600 font-bold text-sm">
+                                <span class="flex h-2.5 w-2.5 relative">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-orange-500"></span>
+                                </span>
+                                點擊左側功能按鍵，免下滑直接進入學習模式！
+                            </div>
+                            
+                            <h1 class="text-4xl sm:text-5xl font-black text-slate-900 leading-tight tracking-tight">
+                                讀書不再死背硬記，<br>
+                                用<span class="relative inline-block text-blue-600">
+                                    互動闖關
+                                    <svg class="absolute -bottom-2 left-0 w-full h-3 text-yellow-400 -z-10" viewBox="0 0 100 10" preserveAspectRatio="none"><path d="M0 5 Q 50 10 100 5" stroke="currentColor" stroke-width="8" fill="none"/></svg>
+                                </span>輕鬆拿高分！
+                            </h1>
+                            
+                            <p class="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto xl:mx-0 leading-relaxed">
+                                國文、英文、數學、自然、社會全科一對一指導 ＋ 南一／翰林／康軒版本題庫與 AI 解題小助教，幫你把弱科變強項！
+                            </p>
+
+                            <div class="flex flex-col sm:flex-row items-center justify-center xl:justify-start gap-4 pt-2">
+                                <button type="button" onclick="switchView('quiz')" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-black text-lg shadow-xl shadow-orange-500/30 flex items-center justify-center gap-2 transition-all hover:scale-105 active:scale-95">
+                                    <i class="fa-solid fa-gamepad"></i> 立即開始版本小測驗
+                                </button>
+                                <button type="button" onclick="switchView('ai')" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white hover:bg-slate-50 text-slate-800 border-2 border-slate-200 font-bold text-lg flex items-center justify-center gap-2 transition-all">
+                                    <i class="fa-solid fa-robot text-blue-600"></i> 問問 AI 伴讀助教
+                                </button>
+                            </div>
+
+                            <!-- 快捷功能卡片按鈕區 -->
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4">
+                                <button type="button" onclick="switchView('quiz')" class="bg-white hover:border-orange-400 border-2 border-slate-100 p-3.5 rounded-2xl text-center transition-all shadow-xs">
+                                    <div class="text-2xl mb-1">🎯</div>
+                                    <div class="font-black text-xs text-slate-800">版本程度測驗</div>
+                                </button>
+                                <button type="button" onclick="switchView('flashcard')" class="bg-white hover:border-amber-400 border-2 border-slate-100 p-3.5 rounded-2xl text-center transition-all shadow-xs">
+                                    <div class="text-2xl mb-1">🃏</div>
+                                    <div class="font-black text-xs text-slate-800">3D 翻轉記憶卡</div>
+                                </button>
+                                <button type="button" onclick="switchView('focus')" class="bg-white hover:border-emerald-400 border-2 border-slate-100 p-3.5 rounded-2xl text-center transition-all shadow-xs">
+                                    <div class="text-2xl mb-1">⏱️</div>
+                                    <div class="font-black text-xs text-slate-800">白噪音自習室</div>
+                                </button>
+                                <button type="button" onclick="switchView('subjects')" class="bg-white hover:border-blue-400 border-2 border-slate-100 p-3.5 rounded-2xl text-center transition-all shadow-xs">
+                                    <div class="text-2xl mb-1">📚</div>
+                                    <div class="font-black text-xs text-slate-800">全科秒懂筆記</div>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 右側互動視覺卡片 -->
+                        <div class="xl:col-span-5 relative">
+                            <div class="relative mx-auto w-full max-w-md">
+                                <div class="absolute -top-5 -left-3 z-20 bg-yellow-300 text-slate-900 font-black px-4 py-2 rounded-2xl shadow-lg rotate-[-6deg] animate-float flex items-center gap-2 text-sm">
+                                    <span class="text-lg">🔥</span> 連續學習 14 天！
+                                </div>
+                                
+                                <div class="bg-white rounded-3xl p-6 shadow-2xl border-2 border-blue-100 relative z-10">
+                                    <div class="flex items-center justify-between mb-5">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-2xl font-bold">
+                                                😎
+                                            </div>
+                                            <div>
+                                                <div id="hero-level-title" class="text-xs font-bold text-slate-400">LV.12 準會考戰士</div>
+                                                <div class="font-black text-slate-800 text-lg">今日互動任務 (點擊打卡)</div>
+                                            </div>
+                                        </div>
+                                        <span id="hero-progress-badge" class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 font-bold text-xs">進度 67%</span>
+                                    </div>
+
+                                    <div class="space-y-3 mb-5" id="daily-tasks-list">
+                                        <button type="button" onclick="toggleDailyTask(this, 50)" data-done="true" class="w-full text-left p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-200 flex items-center justify-between transition-all hover:scale-[1.01]">
+                                            <div class="flex items-center gap-3">
+                                                <span class="w-8 h-8 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center font-bold">數</span>
+                                                <div>
+                                                    <div class="font-bold text-sm text-slate-800 line-through opacity-75 task-title">一元二次方程式闖關</div>
+                                                    <div class="text-xs text-emerald-600 font-semibold task-sub">已完成！(+50 EXP)</div>
+                                                </div>
+                                            </div>
+                                            <i class="fa-solid fa-circle-check text-emerald-500 text-xl task-icon"></i>
+                                        </button>
+
+                                        <button type="button" onclick="toggleDailyTask(this, 50)" data-done="true" class="w-full text-left p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-200 flex items-center justify-between transition-all hover:scale-[1.01]">
+                                            <div class="flex items-center gap-3">
+                                                <span class="w-8 h-8 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center font-bold">英</span>
+                                                <div>
+                                                    <div class="font-bold text-sm text-slate-800 line-through opacity-75 task-title">完成式與被動語態</div>
+                                                    <div class="text-xs text-emerald-600 font-semibold task-sub">已完成！(+50 EXP)</div>
+                                                </div>
+                                            </div>
+                                            <i class="fa-solid fa-circle-check text-emerald-500 text-xl task-icon"></i>
+                                        </button>
+
+                                        <button type="button" onclick="toggleDailyTask(this, 80)" data-done="false" class="w-full text-left p-3.5 rounded-2xl bg-blue-50/70 border border-blue-200 flex items-center justify-between transition-all hover:scale-[1.01]">
+                                            <div class="flex items-center gap-3">
+                                                <span class="w-8 h-8 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center font-bold">理</span>
+                                                <div>
+                                                    <div class="font-bold text-sm text-blue-900 task-title">直線運動與加速度</div>
+                                                    <div class="text-xs text-blue-600 font-semibold task-sub">點擊完成打卡領 +80 EXP！</div>
+                                                </div>
+                                            </div>
+                                            <i class="fa-regular fa-circle text-blue-400 text-xl task-icon"></i>
+                                        </button>
+                                    </div>
+
+                                    <div class="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl p-4 text-white flex items-center justify-between">
+                                        <div>
+                                            <div class="text-xs opacity-90">目前累積學習能量</div>
+                                            <div id="hero-exp-display" class="font-black text-lg">350 EXP 能量點數</div>
+                                        </div>
+                                        <div class="text-3xl">🏆</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 分頁 2：線上程度小測驗 (Interactive Quiz Engine) -->
+            <section id="view-quiz" class="app-view hidden py-10 md:py-16 bg-white relative flex-1">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <span class="inline-block px-4 py-1.5 rounded-full bg-orange-100 text-orange-600 font-black text-sm mb-3">
+                    🎯 3 分鐘快速診斷
+                </span>
+                <h2 class="text-3xl sm:text-4xl font-black text-slate-900 mb-4">
+                    國中全科程度小測驗
+                </h2>
+                <p class="text-slate-600 text-base sm:text-lg">
+                    選擇你的年級與想挑戰的科目，立刻測試你的實戰力，系統將自動為你分析弱點並推薦專屬攻略！
+                </p>
+            </div>
+
+            <!-- 測驗互動主容器 -->
+            <div class="bg-gradient-to-br from-blue-50 via-indigo-50/60 to-purple-50 rounded-3xl p-6 sm:p-10 border-2 border-blue-100 shadow-xl">
+                
+                <!-- 步驟 1：選擇年級與科目 (預設顯示) -->
+                <div id="quiz-setup" class="space-y-8">
+                    <div>
+                        <label class="block font-black text-slate-800 text-lg mb-3">1. 請選擇你目前的年級：</label>
+                        <div class="grid grid-cols-3 gap-3 sm:gap-4" id="grade-selector">
+                            <button type="button" data-grade="7" class="grade-btn active py-3.5 px-4 rounded-2xl font-black text-base sm:text-lg border-2 border-blue-600 bg-blue-600 text-white shadow-md transition-all">
+                                國一新鮮人
+                            </button>
+                            <button type="button" data-grade="8" class="grade-btn py-3.5 px-4 rounded-2xl font-black text-base sm:text-lg border-2 border-slate-200 bg-white text-slate-700 hover:border-blue-400 transition-all">
+                                國二衝刺期
+                            </button>
+                            <button type="button" data-grade="9" class="grade-btn py-3.5 px-4 rounded-2xl font-black text-base sm:text-lg border-2 border-slate-200 bg-white text-slate-700 hover:border-blue-400 transition-all">
+                                國三會考戰士
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 新增：教科書版本範圍選擇 -->
+                    <div>
+                        <label class="block font-black text-slate-800 text-lg mb-3">2. 請選擇學校教科書版本範圍：</label>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="publisher-selector">
+                            <button type="button" data-pub="all" class="pub-btn active py-3 px-4 rounded-2xl font-black text-sm sm:text-base border-2 border-emerald-600 bg-emerald-600 text-white shadow-md transition-all flex items-center justify-center gap-1.5">
+                                <span>📚 全版本綜合</span>
+                            </button>
+                            <button type="button" data-pub="nanyi" class="pub-btn py-3 px-4 rounded-2xl font-bold text-sm sm:text-base border-2 border-slate-200 bg-white text-slate-700 hover:border-emerald-400 transition-all flex items-center justify-center gap-1.5">
+                                <span>📙 南一版題庫</span>
+                            </button>
+                            <button type="button" data-pub="hanlin" class="pub-btn py-3 px-4 rounded-2xl font-bold text-sm sm:text-base border-2 border-slate-200 bg-white text-slate-700 hover:border-emerald-400 transition-all flex items-center justify-center gap-1.5">
+                                <span>📗 翰林版題庫</span>
+                            </button>
+                            <button type="button" data-pub="kangxuan" class="pub-btn py-3 px-4 rounded-2xl font-bold text-sm sm:text-base border-2 border-slate-200 bg-white text-slate-700 hover:border-emerald-400 transition-all flex items-center justify-center gap-1.5">
+                                <span>📘 康軒版題庫</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block font-black text-slate-800 text-lg mb-3">3. 選擇要挑戰的測驗科目：</label>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4" id="subject-selector">
+                            <button type="button" data-subj="all" class="subj-btn active p-4 rounded-2xl border-2 border-orange-500 bg-orange-50 text-orange-700 font-black flex flex-col items-center gap-2 shadow-sm transition-all">
+                                <span class="text-2xl">🌟</span>
+                                <span>全科綜合挑戰 (5題)</span>
+                            </button>
+                            <button type="button" data-subj="math" class="subj-btn p-4 rounded-2xl border-2 border-slate-200 bg-white text-slate-700 hover:border-blue-400 font-bold flex flex-col items-center gap-2 transition-all">
+                                <span class="text-2xl">📐</span>
+                                <span>數學邏輯力</span>
+                            </button>
+                            <button type="button" data-subj="english" class="subj-btn p-4 rounded-2xl border-2 border-slate-200 bg-white text-slate-700 hover:border-blue-400 font-bold flex flex-col items-center gap-2 transition-all">
+                                <span class="text-2xl">🔤</span>
+                                <span>英文文法閱讀</span>
+                            </button>
+                            <button type="button" data-subj="science" class="subj-btn p-4 rounded-2xl border-2 border-slate-200 bg-white text-slate-700 hover:border-blue-400 font-bold flex flex-col items-center gap-2 transition-all">
+                                <span class="text-2xl">🧪</span>
+                                <span>自然理化實驗</span>
+                            </button>
+                            <button type="button" data-subj="chinese" class="subj-btn p-4 rounded-2xl border-2 border-slate-200 bg-white text-slate-700 hover:border-blue-400 font-bold flex flex-col items-center gap-2 transition-all">
+                                <span class="text-2xl">📖</span>
+                                <span>國文語感素養</span>
+                            </button>
+                            <button type="button" data-subj="social" class="subj-btn p-4 rounded-2xl border-2 border-slate-200 bg-white text-slate-700 hover:border-blue-400 font-bold flex flex-col items-center gap-2 transition-all">
+                                <span class="text-2xl">🌍</span>
+                                <span>社會史地公民</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="pt-2 text-center">
+                        <button id="start-quiz-btn" class="w-full sm:w-auto px-12 py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xl shadow-lg shadow-blue-600/30 transition-all hover:scale-105 active:scale-95">
+                            開始測驗挑戰 🚀
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 步驟 2：進行測驗 (預設隱藏) -->
+                <div id="quiz-playing" class="hidden space-y-6">
+                    <!-- 頂部進度列 -->
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                        <div class="flex items-center gap-2">
+                            <span id="quiz-pub-badge" class="px-3 py-1.5 rounded-xl bg-emerald-600 text-white font-bold text-xs sm:text-sm">南一版</span>
+                            <span id="quiz-badge" class="px-3.5 py-1.5 rounded-xl bg-blue-600 text-white font-bold text-xs sm:text-sm">數學科</span>
+                        </div>
+                        <div class="flex-1 min-w-[120px] bg-slate-200 h-3 rounded-full overflow-hidden">
+                            <div id="quiz-progress-bar" class="bg-gradient-to-r from-blue-500 to-emerald-400 h-full transition-all duration-300" style="width: 20%"></div>
+                        </div>
+                        <span id="quiz-counter" class="font-black text-slate-700 text-sm">1 / 5</span>
+                    </div>
+
+                    <!-- 題目區 -->
+                    <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-100">
+                        <h3 id="question-text" class="text-xl sm:text-2xl font-black text-slate-800 leading-snug mb-6">
+                            題目載入中...
+                        </h3>
+
+                        <!-- 選項列表 -->
+                        <div id="options-container" class="space-y-3">
+                            <!-- 動態產生選項按鈕 -->
+                        </div>
+
+                        <!-- 即時詳解回饋區 -->
+                        <div id="answer-feedback" class="hidden mt-6 p-4 rounded-2xl border-l-4">
+                            <div id="feedback-title" class="font-black text-base mb-1"></div>
+                            <p id="feedback-explanation" class="text-sm text-slate-700 leading-relaxed"></p>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                        <button id="quit-quiz-btn" class="text-slate-500 hover:text-slate-800 font-bold text-sm px-3 py-2">
+                            <i class="fa-solid fa-arrow-left mr-1"></i> 重新選擇科目
+                        </button>
+                        <button id="next-question-btn" class="hidden px-8 py-3 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-bold transition-all">
+                            下一題 <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 步驟 3：測驗結果與弱點診斷報告 (預設隱藏) -->
+                <div id="quiz-result" class="hidden text-center space-y-6">
+                    <div class="inline-flex items-center justify-center w-24 h-24 rounded-full bg-yellow-300 text-5xl shadow-lg animate-bounce-slow">
+                        🏆
+                    </div>
+                    <div>
+                        <div class="text-sm font-black text-blue-600 uppercase tracking-wider mb-1">測驗診斷完成！</div>
+                        <h3 class="text-3xl sm:text-4xl font-black text-slate-900">
+                            你的得分：<span id="final-score" class="text-orange-500">80</span> 分
+                        </h3>
+                        <p id="result-rank" class="inline-block mt-2 px-4 py-1 rounded-full bg-emerald-100 text-emerald-800 font-black text-sm">
+                            稱號：潛力無窮的準學霸
+                        </p>
+                    </div>
+
+                    <!-- 診斷分析卡片 -->
+                    <div class="bg-white p-6 rounded-2xl text-left border border-slate-200 max-w-2xl mx-auto space-y-4">
+                        <h4 class="font-black text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-stethoscope text-blue-600"></i> 專屬家教學習建議：
+                        </h4>
+                        <p id="result-advice" class="text-slate-600 text-sm sm:text-base leading-relaxed">
+                            你的基礎觀念相當不錯！建議針對錯題部分加強觀念連結，避免粗心失分。
+                        </p>
+                        <div id="weak-points-tags" class="flex flex-wrap gap-2 pt-1">
+                            <!-- 動態產生建議加強標籤 -->
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+                        <button id="restart-quiz-btn" class="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-white border-2 border-slate-300 hover:border-slate-400 text-slate-800 font-bold transition-all">
+                            <i class="fa-solid fa-rotate-right mr-1"></i> 再測一次其他科目
+                        </button>
+                        <button type="button" onclick="switchView('booking')" class="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black shadow-lg hover:opacity-95 transition-all">
+                            領取免費錯題一對一講解 🎁
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+            <!-- 分頁 3：必考單字與公式「3D翻轉記憶卡」 -->
+            <section id="view-flashcard" class="app-view hidden py-10 md:py-16 bg-amber-50/60 flex-1">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-10">
+                <span class="inline-block px-4 py-1.5 rounded-full bg-amber-200 text-amber-900 font-black text-sm mb-3">
+                    🃏 碎片時間背誦神器
+                </span>
+                <h2 class="text-3xl sm:text-4xl font-black text-slate-900 mb-3">
+                    會考必背「3D 翻轉記憶卡」
+                </h2>
+                <p class="text-slate-600">
+                    點擊卡片翻面看答案！每熟記一張卡片就能獲得 <span class="font-black text-orange-600">+15 EXP</span>，快來挑戰全部清空吧！
+                </p>
+            </div>
+
+            <!-- 科目篩選標籤 -->
+            <div class="flex flex-wrap justify-center gap-2 mb-8" id="fc-filter-bar">
+                <button type="button" onclick="filterFlashcards('all', this)" class="fc-tab px-4 py-2 rounded-xl font-black text-sm bg-slate-900 text-white shadow">全部精選 (8)</button>
+                <button type="button" onclick="filterFlashcards('english', this)" class="fc-tab px-4 py-2 rounded-xl font-bold text-sm bg-white text-slate-700 border border-slate-200 hover:border-amber-400">🔤 英文高頻片語</button>
+                <button type="button" onclick="filterFlashcards('math', this)" class="fc-tab px-4 py-2 rounded-xl font-bold text-sm bg-white text-slate-700 border border-slate-200 hover:border-amber-400">📐 數學必背公式</button>
+                <button type="button" onclick="filterFlashcards('science', this)" class="fc-tab px-4 py-2 rounded-xl font-bold text-sm bg-white text-slate-700 border border-slate-200 hover:border-amber-400">🧪 理化記憶口訣</button>
+                <button type="button" onclick="filterFlashcards('chinese', this)" class="fc-tab px-4 py-2 rounded-xl font-bold text-sm bg-white text-slate-700 border border-slate-200 hover:border-amber-400">📖 國文易錯形音義</button>
+            </div>
+
+            <!-- 3D 卡片容器 -->
+            <div class="max-w-xl mx-auto">
+                <div onclick="flipFlashcard()" class="perspective-1000 cursor-pointer h-72 sm:h-80 w-full select-none group">
+                    <div id="fc-inner" class="relative w-full h-full transform-style-3d">
+                        <!-- 正面 (題目) -->
+                        <div class="absolute inset-0 backface-hidden bg-white rounded-3xl p-8 shadow-xl border-2 border-amber-200 flex flex-col justify-between">
+                            <div class="flex justify-between items-center">
+                                <span id="fc-subject-tag" class="px-3 py-1 rounded-xl bg-amber-100 text-amber-800 font-black text-xs">英文高頻片語</span>
+                                <span id="fc-counter" class="text-xs font-black text-slate-400">1 / 8</span>
+                            </div>
+                            <div class="text-center my-auto px-2">
+                                <div class="text-xs font-bold text-slate-400 mb-2">點擊卡片查看解答 👇</div>
+                                <h3 id="fc-front-text" class="text-2xl sm:text-3xl font-black text-slate-900 leading-snug">
+                                    look forward to + V-ing
+                                </h3>
+                            </div>
+                            <div class="text-center text-xs font-bold text-amber-600">
+                                <i class="fa-solid fa-rotate mr-1"></i> 點擊翻面
+                            </div>
+                        </div>
+
+                        <!-- 背面 (解答與例句) -->
+                        <div class="absolute inset-0 backface-hidden rotate-y-180 bg-gradient-to-br from-indigo-600 to-blue-700 text-white rounded-3xl p-8 shadow-xl flex flex-col justify-between">
+                            <div class="flex justify-between items-center">
+                                <span class="px-3 py-1 rounded-xl bg-white/20 text-yellow-300 font-black text-xs">💡 考點解析</span>
+                                <span class="text-xs font-bold text-blue-200">點擊翻回正面</span>
+                            </div>
+                            <div class="text-center my-auto space-y-3">
+                                <h4 id="fc-back-title" class="text-2xl font-black text-yellow-300">
+                                    期待、盼望（後面接動名詞 V-ing）
+                                </h4>
+                                <p id="fc-back-desc" class="text-sm sm:text-base text-blue-100 leading-relaxed bg-white/10 p-3.5 rounded-2xl">
+                                    陷阱提醒：這裡的 to 是介系詞，不是不定詞！<br>例句：I look forward to seeing you soon.
+                                </p>
+                            </div>
+                            <div class="text-center text-xs text-blue-200">
+                                記住了嗎？點擊下方按鈕領取經驗值！
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 卡片底部操作按鈕 -->
+                <div class="flex items-center justify-between gap-3 mt-6">
+                    <button type="button" onclick="prevFlashcard()" class="px-5 py-3.5 rounded-2xl bg-white border-2 border-slate-200 hover:border-slate-400 text-slate-700 font-black transition-all">
+                        <i class="fa-solid fa-chevron-left"></i> 上一張
+                    </button>
+                    <button type="button" onclick="markFlashcardMastered()" class="flex-1 py-3.5 px-6 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-black shadow-lg shadow-emerald-500/30 transition-all active:scale-95 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-check-double"></i> 我背起來了！(+15 EXP)
+                    </button>
+                    <button type="button" onclick="nextFlashcard()" class="px-5 py-3.5 rounded-2xl bg-white border-2 border-slate-200 hover:border-slate-400 text-slate-700 font-black transition-all">
+                        下一張 <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+            <!-- 分頁 4：線上專注力番茄鐘 ＋ 白噪音自習室 -->
+            <section id="view-focus" class="app-view hidden py-10 md:py-16 bg-white flex-1">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 rounded-3xl p-6 sm:p-10 border-2 border-emerald-200 shadow-xl">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    <!-- 左側：計時器主體 -->
+                    <div class="lg:col-span-6 text-center bg-white rounded-3xl p-8 shadow-md border border-emerald-100">
+                        <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-100 text-emerald-700 font-black text-xs mb-4">
+                            <i class="fa-solid fa-headphones"></i> 沉浸式線上自習室
+                        </div>
+                        <h3 class="text-xl font-black text-slate-800 mb-2">專注力番茄鐘計時器</h3>
+                        
+                        <!-- 時間模式切換 -->
+                        <div class="flex justify-center gap-2 mb-6">
+                            <button type="button" onclick="setTimerMode(25, this)" class="timer-mode-btn px-3 py-1 rounded-xl bg-emerald-600 text-white font-bold text-xs">25分 衝刺讀書</button>
+                            <button type="button" onclick="setTimerMode(10, this)" class="timer-mode-btn px-3 py-1 rounded-xl bg-slate-100 text-slate-600 font-bold text-xs hover:bg-slate-200">10分 快速背單字</button>
+                            <button type="button" onclick="setTimerMode(5, this)" class="timer-mode-btn px-3 py-1 rounded-xl bg-slate-100 text-slate-600 font-bold text-xs hover:bg-slate-200">5分 眼睛休息</button>
+                        </div>
+
+                        <!-- 倒數數字顯示 -->
+                        <div id="pomodoro-display" class="text-6xl sm:text-7xl font-black text-slate-900 tracking-wider font-mono my-4">
+                            25:00
+                        </div>
+                        <p id="pomodoro-status" class="text-xs font-bold text-slate-400 mb-6">準備好就按下開始，專注完成可領 +100 EXP！</p>
+
+                        <!-- 控制按鈕 -->
+                        <div class="flex items-center justify-center gap-3">
+                            <button type="button" id="timer-toggle-btn" onclick="togglePomodoro()" class="px-8 py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-base shadow-lg shadow-emerald-600/30 transition-all active:scale-95 flex items-center gap-2">
+                                <i class="fa-solid fa-play"></i> 開始專注
+                            </button>
+                            <button type="button" onclick="resetPomodoro()" class="px-4 py-3.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition-all" title="重設時間">
+                                <i class="fa-solid fa-rotate-left"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 右側：讀書白噪音混音器 ＋ 目標設定 -->
+                    <div class="lg:col-span-6 space-y-5">
+                        <h3 class="text-2xl sm:text-3xl font-black text-slate-900 leading-tight">
+                            讀書容易分心滑手機？<br>開啟<span class="text-emerald-600">療癒白噪音</span>陪你寫作業！
+                        </h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">
+                            科學研究顯示，穩定的環境白噪音能幫助大腦進入「心流狀態」，隔絕外界干擾。點擊下方音效按鈕立即開啟（支援即時聲音合成，免下載）：
+                        </p>
+
+                        <!-- 白噪音按鈕組 -->
+                        <div class="grid grid-cols-2 gap-3">
+                            <button type="button" id="sound-rain-btn" onclick="toggleAmbientSound('rain')" class="p-4 rounded-2xl bg-white border-2 border-slate-200 hover:border-blue-400 text-left transition-all flex items-center gap-3">
+                                <span class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl">🌧️</span>
+                                <div>
+                                    <div class="font-black text-sm text-slate-800">窗外細雨聲</div>
+                                    <div id="rain-status" class="text-xs text-slate-400 font-bold">點擊開啟</div>
+                                </div>
+                            </button>
+
+                            <button type="button" id="sound-cafe-btn" onclick="toggleAmbientSound('cafe')" class="p-4 rounded-2xl bg-white border-2 border-slate-200 hover:border-amber-400 text-left transition-all flex items-center gap-3">
+                                <span class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-xl">🌊</span>
+                                <div>
+                                    <div class="font-black text-sm text-slate-800">平靜海浪聲</div>
+                                    <div id="cafe-status" class="text-xs text-slate-400 font-bold">點擊開啟</div>
+                                </div>
+                            </button>
+                        </div>
+
+                        <!-- 今日讀書目標便條 -->
+                        <div class="bg-white/80 p-4 rounded-2xl border border-emerald-200">
+                            <label class="block text-xs font-black text-emerald-800 mb-1.5">📌 設定這 25 分鐘要完成的目標：</label>
+                            <input type="text" placeholder="例如：寫完數學講義 P.32～35、背完 20 個英文單字..." class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-sm focus:border-emerald-500 focus:outline-none bg-white">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+            <!-- 分頁 5：全科互動學習資源庫 (Subject Hub) -->
+            <section id="view-subjects" class="app-view hidden py-10 md:py-16 bg-slate-50 flex-1">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+                <div>
+                    <span class="inline-block px-4 py-1.5 rounded-full bg-emerald-100 text-emerald-700 font-black text-sm mb-3">
+                        📚 國英數自社・全科制霸
+                    </span>
+                    <h2 class="text-3xl sm:text-4xl font-black text-slate-900">
+                        互動式重點筆記與必考攻略
+                    </h2>
+                </div>
+                <p class="text-slate-600 max-w-md">
+                    點擊下方科目卡片，立即預覽我們為國中生整理的「圖像化秒懂筆記」與「段考高頻率考點」！
+                </p>
+            </div>
+
+            <!-- 五大科目卡片網格 -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
+                <!-- 國文 -->
+                <div onclick="openSubjectModal('chinese')" class="cursor-pointer bg-white rounded-3xl p-6 border-2 border-rose-100 hover:border-rose-400 card-hover flex flex-col justify-between">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center text-2xl font-black mb-4">
+                            國
+                        </div>
+                        <h3 class="text-xl font-black text-slate-800 mb-2">國文素養</h3>
+                        <p class="text-sm text-slate-500 leading-relaxed mb-4">
+                            文言文拆解口訣、長文閱讀抓重點技巧、會考六級分作文模板。
+                        </p>
+                    </div>
+                    <div class="text-rose-600 font-bold text-sm flex items-center gap-1">
+                        查看秒懂筆記 <i class="fa-solid fa-chevron-right text-xs"></i>
+                    </div>
+                </div>
+
+                <!-- 英文 -->
+                <div onclick="openSubjectModal('english')" class="cursor-pointer bg-white rounded-3xl p-6 border-2 border-amber-100 hover:border-amber-400 card-hover flex flex-col justify-between">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center text-2xl font-black mb-4">
+                            英
+                        </div>
+                        <h3 class="text-xl font-black text-slate-800 mb-2">英文實戰</h3>
+                        <p class="text-sm text-slate-500 leading-relaxed mb-4">
+                            1200單字聯想記憶、時態時間軸圖解、克漏字與聽力高分秘笈。
+                        </p>
+                    </div>
+                    <div class="text-amber-600 font-bold text-sm flex items-center gap-1">
+                        查看秒懂筆記 <i class="fa-solid fa-chevron-right text-xs"></i>
+                    </div>
+                </div>
+
+                <!-- 數學 -->
+                <div onclick="openSubjectModal('math')" class="cursor-pointer bg-white rounded-3xl p-6 border-2 border-blue-100 hover:border-blue-400 card-hover flex flex-col justify-between">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-2xl font-black mb-4">
+                            數
+                        </div>
+                        <h3 class="text-xl font-black text-slate-800 mb-2">數學邏輯</h3>
+                        <p class="text-sm text-slate-500 leading-relaxed mb-4">
+                            幾何輔助線畫法、函數圖形直覺理解、非選擇題標準寫法拆解。
+                        </p>
+                    </div>
+                    <div class="text-blue-600 font-bold text-sm flex items-center gap-1">
+                        查看秒懂筆記 <i class="fa-solid fa-chevron-right text-xs"></i>
+                    </div>
+                </div>
+
+                <!-- 自然 -->
+                <div onclick="openSubjectModal('science')" class="cursor-pointer bg-white rounded-3xl p-6 border-2 border-emerald-100 hover:border-emerald-400 card-hover flex flex-col justify-between">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-2xl font-black mb-4">
+                            自
+                        </div>
+                        <h3 class="text-xl font-black text-slate-800 mb-2">自然科學</h3>
+                        <p class="text-sm text-slate-500 leading-relaxed mb-4">
+                            生物遺傳棋盤格、理化公式生活化理解、地科天文圖表判讀。
+                        </p>
+                    </div>
+                    <div class="text-emerald-600 font-bold text-sm flex items-center gap-1">
+                        查看秒懂筆記 <i class="fa-solid fa-chevron-right text-xs"></i>
+                    </div>
+                </div>
+
+                <!-- 社會 -->
+                <div onclick="openSubjectModal('social')" class="cursor-pointer bg-white rounded-3xl p-6 border-2 border-purple-100 hover:border-purple-400 card-hover flex flex-col justify-between">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center text-2xl font-black mb-4">
+                            社
+                        </div>
+                        <h3 class="text-xl font-black text-slate-800 mb-2">社會整合</h3>
+                        <p class="text-sm text-slate-500 leading-relaxed mb-4">
+                            歷史朝代時間軸心智圖、氣候地形對照表、公民法律經濟生活題。
+                        </p>
+                    </div>
+                    <div class="text-purple-600 font-bold text-sm flex items-center gap-1">
+                        查看秒懂筆記 <i class="fa-solid fa-chevron-right text-xs"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+            <!-- 分頁 6：AI 24H 伴讀解題助教 (Gemini API Integration) -->
+            <section id="view-ai" class="app-view hidden py-10 md:py-16 bg-white flex-1">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-slate-900 rounded-3xl p-6 sm:p-10 text-white shadow-2xl relative overflow-hidden">
+                <!-- 裝飾光暈 -->
+                <div class="absolute -top-24 -right-24 w-64 h-64 bg-blue-500/30 rounded-full blur-3xl"></div>
+                <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-purple-500/30 rounded-full blur-3xl"></div>
+
+                <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    <!-- 左側說明 -->
+                    <div class="lg:col-span-5 space-y-4">
+                        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 text-yellow-300 font-bold text-xs">
+                            <i class="fa-solid fa-sparkles"></i> 24小時不打烊學習夥伴
+                        </div>
+                        <h2 class="text-3xl font-black leading-tight">
+                            寫作業卡關了？<br>立刻問 <span class="text-cyan-400">AI 伴讀小老師</span>
+                        </h2>
+                        <p class="text-slate-300 text-sm leading-relaxed">
+                            半夜寫題目不會算、英文文法搞不懂、或是想請老師幫忙出幾題練習題？直接輸入你的問題，馬上獲得白話又好懂的步驟解析！
+                        </p>
+                        
+                        <!-- 快速提問範例按鈕 -->
+                        <div class="space-y-2 pt-2">
+                            <div class="text-xs font-bold text-slate-400">點擊試試看範例問題：</div>
+                            <button type="button" onclick="fillAiPrompt('請用簡單好懂的方式解釋：什麼是「現在完成式」？並給我兩個國中常見例句。')" class="w-full text-left text-xs bg-white/10 hover:bg-white/20 p-2.5 rounded-xl transition-colors flex items-center justify-between">
+                                <span>🔤 解釋英文「現在完成式」用法</span>
+                                <i class="fa-solid fa-paper-plane text-cyan-400"></i>
+                            </button>
+                            <button type="button" onclick="fillAiPrompt('幫我解這題國中數學：已知一個長方形的長比寬多 3 公分，且面積為 40 平方公分，請問長與寬各是多少？請一步一步教我。')" class="w-full text-left text-xs bg-white/10 hover:bg-white/20 p-2.5 rounded-xl transition-colors flex items-center justify-between">
+                                <span>📐 一步步教我解一元二次應用題</span>
+                                <i class="fa-solid fa-paper-plane text-cyan-400"></i>
+                            </button>
+                            <button type="button" onclick="fillAiPrompt('請幫我整理國中理化「浮力」的三大重點口訣，讓我段考不會忘記！')" class="w-full text-left text-xs bg-white/10 hover:bg-white/20 p-2.5 rounded-xl transition-colors flex items-center justify-between">
+                                <span>🧪 整理理化「浮力」必考重點口訣</span>
+                                <i class="fa-solid fa-paper-plane text-cyan-400"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 右側互動聊天視窗 -->
+                    <div class="lg:col-span-7 bg-slate-800/90 border border-slate-700 rounded-2xl p-4 sm:p-5 flex flex-col h-[420px]">
+                        <!-- 對話顯示區 -->
+                        <div id="ai-chat-history" class="flex-1 overflow-y-auto space-y-4 pr-2 mb-4">
+                            <!-- 歡迎訊息 -->
+                            <div class="flex items-start gap-3">
+                                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-400 to-blue-600 flex items-center justify-center text-white font-bold shrink-0">
+                                    🤖
+                                </div>
+                                <div class="bg-slate-700/80 rounded-2xl rounded-tl-none p-3.5 text-sm text-slate-100 leading-relaxed">
+                                    嗨同學你好！我是你的全科 AI 伴讀助教 👋<br>
+                                    不管是國文、英文、數學、理化還是社會，把不會的題目或觀念貼給我，我都會用最白話的方式帶你一步步破關喔！
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 輸入框區 -->
+                        <form id="ai-chat-form" class="flex gap-2">
+                            <input type="text" id="ai-user-input" placeholder="輸入你的課業問題（例如：牛頓第二運動定律是什麼？）" class="flex-1 bg-slate-900 border border-slate-600 focus:border-cyan-400 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-400 focus:outline-none" required>
+                            <button type="submit" id="ai-send-btn" class="px-5 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-sm transition-all flex items-center gap-1.5 shrink-0">
+                                <span>發問</span>
+                                <i class="fa-solid fa-paper-plane"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+            <!-- 分頁 7：人氣家教團隊介紹 -->
+            <section id="view-tutors" class="app-view hidden py-10 md:py-16 bg-sky-50/60 flex-1">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-14">
+                <span class="inline-block px-4 py-1.5 rounded-full bg-blue-100 text-blue-700 font-black text-sm mb-3">
+                    👨‍🏫 拒絕填鴨・像朋友一樣的家教
+                </span>
+                <h2 class="text-3xl sm:text-4xl font-black text-slate-900 mb-4">
+                    超懂國中生痛點的全能家教群
+                </h2>
+                <p class="text-slate-600">
+                    嚴選頂尖大學教學經驗豐富的家教老師，不講催眠的課本照本宣科，只教聽得懂、用得出的解題思維！
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- 老師 1 -->
+                <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-100 card-hover">
+                    <div class="flex items-center gap-4 mb-5">
+                        <div class="w-16 h-16 rounded-2xl bg-blue-100 flex items-center justify-center text-3xl">
+                            🧑‍🏫
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h3 class="text-xl font-black text-slate-900">阿哲老師</h3>
+                                <span class="px-2.5 py-0.5 rounded-lg bg-blue-600 text-white text-xs font-bold">數理王牌</span>
+                            </div>
+                            <p class="text-xs font-bold text-slate-400 mt-0.5">台大電機系｜6年國中家教經驗</p>
+                        </div>
+                    </div>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                        「數學不是背公式，而是玩解謎遊戲！」擅長將抽象的幾何與理化力學畫成生活插圖，讓原本排斥數理的學生段考平均進步 25 分以上。
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 rounded-xl bg-slate-100 text-slate-600 text-xs font-bold">#圖像化教學</span>
+                        <span class="px-3 py-1 rounded-xl bg-slate-100 text-slate-600 text-xs font-bold">#會考非選滿分</span>
+                    </div>
+                </div>
+
+                <!-- 老師 2 -->
+                <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-100 card-hover">
+                    <div class="flex items-center gap-4 mb-5">
+                        <div class="w-16 h-16 rounded-2xl bg-amber-100 flex items-center justify-center text-3xl">
+                            👩‍🏫
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h3 class="text-xl font-black text-slate-900">Chloe 老師</h3>
+                                <span class="px-2.5 py-0.5 rounded-lg bg-amber-500 text-white text-xs font-bold">英文救星</span>
+                            </div>
+                            <p class="text-xs font-bold text-slate-400 mt-0.5">政大英文系｜多益 990 金色證書</p>
+                        </div>
+                    </div>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                        結合歐美影集、流行音樂與故事記憶法，徹底告別痛苦的單字表！獨創「三秒抓主詞動詞法」，讓長篇閱讀測驗變得超簡單。
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 rounded-xl bg-slate-100 text-slate-600 text-xs font-bold">#文法邏輯化</span>
+                        <span class="px-3 py-1 rounded-xl bg-slate-100 text-slate-600 text-xs font-bold">#英檢初級中級</span>
+                    </div>
+                </div>
+
+                <!-- 老師 3 -->
+                <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-100 card-hover">
+                    <div class="flex items-center gap-4 mb-5">
+                        <div class="w-16 h-16 rounded-2xl bg-rose-100 flex items-center justify-center text-3xl">
+                            🧑‍🎓
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h3 class="text-xl font-black text-slate-900">小安老師</h3>
+                                <span class="px-2.5 py-0.5 rounded-lg bg-rose-500 text-white text-xs font-bold">國社素養</span>
+                            </div>
+                            <p class="text-xs font-bold text-slate-400 mt-0.5">師大國文系｜跨科素養題專家</p>
+                        </div>
+                    </div>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                        專門對付會考最愛考的「跨領域長文題」！用說故事的方式串聯歷史事件與地理環境，並手把手帶你寫出讓閱卷老師眼睛一亮的六級分作文。
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 rounded-xl bg-slate-100 text-slate-600 text-xs font-bold">#心智圖筆記</span>
+                        <span class="px-3 py-1 rounded-xl bg-slate-100 text-slate-600 text-xs font-bold">#作文六級分</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+            <!-- 分頁 8：免費線上試聽與學習規劃預約 -->
+            <section id="view-booking" class="app-view hidden py-10 md:py-16 bg-white flex-1">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-gradient-to-r from-yellow-300 via-amber-300 to-orange-300 rounded-3xl p-8 sm:p-12 shadow-xl relative overflow-hidden">
+                <div class="relative z-10 grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+                    <div class="md:col-span-6 space-y-4">
+                        <span class="inline-block px-3.5 py-1 rounded-full bg-slate-900 text-yellow-300 font-black text-xs">
+                            🎁 限時免費體驗活動
+                        </span>
+                        <h2 class="text-3xl sm:text-4xl font-black text-slate-900 leading-tight">
+                            預約 1 對 1 線上試聽 ＋ 專屬弱點分析
+                        </h2>
+                        <p class="text-slate-800 font-medium text-sm sm:text-base">
+                            填寫資料即可獲得 45 分鐘一對一線上互動試聽課（可自帶學校考卷或不會的題目來問！），還加贈《國中全科必考公式心智圖電子書》。
+                        </p>
+                        <ul class="space-y-2 text-sm font-bold text-slate-900 pt-2">
+                            <li><i class="fa-solid fa-check-circle text-emerald-700 mr-2"></i>完全免費體驗，無強迫推銷壓力</li>
+                            <li><i class="fa-solid fa-check-circle text-emerald-700 mr-2"></i>支援電腦 / iPad 線上白板互動上課</li>
+                            <li><i class="fa-solid fa-check-circle text-emerald-700 mr-2"></i>課後提供專屬學習進度追蹤表</li>
+                        </ul>
+                    </div>
+
+                    <div class="md:col-span-6 bg-white rounded-2xl p-6 shadow-lg">
+                        <form id="booking-form" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-black text-slate-700 mb-1">學生暱稱 / 姓名 *</label>
+                                <input type="text" required placeholder="例如：王小明" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-blue-500 focus:outline-none text-sm">
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-black text-slate-700 mb-1">目前年級 *</label>
+                                    <select class="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-blue-500 focus:outline-none text-sm bg-white">
+                                        <option>國一 (七年級)</option>
+                                        <option>國二 (八年級)</option>
+                                        <option>國三 (九年級)</option>
+                                        <option>小六升國一先修</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-black text-slate-700 mb-1">最想加強科目 *</label>
+                                    <select class="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:border-blue-500 focus:outline-none text-sm bg-white">
+                                        <option>全科總複習規劃</option>
+                                        <option>數學邏輯</option>
+                                        <option>英文文法閱讀</option>
+                                        <option>自然理化</option>
+                                        <option>國文作文素養</option>
+                                        <option>社會史地公民</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-black text-slate-700 mb-1">聯絡方式 (LINE ID 或 手機號碼) *</label>
+                                <input type="text" required placeholder="方便老師傳送試聽連結與筆記給你" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-blue-500 focus:outline-none text-sm">
+                            </div>
+                            <button type="submit" class="w-full py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-base shadow-md transition-all active:scale-95">
+                                立即送出預約 🚀
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+            <!-- 頁尾 Footer -->
+            <footer class="bg-slate-900 text-slate-400 py-8 border-t border-slate-800 mt-auto">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center text-white text-sm">
+                            <i class="fa-solid fa-rocket"></i>
+                        </div>
+                        <span class="font-black text-base text-white">學霸養成所</span>
+                        <span class="text-xs text-slate-500">| 國中全科互動家教平台</span>
+                    </div>
+                    <div class="text-xs text-center md:text-right">
+                        <p>陪伴每一位國中生，找到最適合自己的學習節奏 ✨ © 2026 學霸養成所</p>
+                    </div>
+                </div>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- 互動筆記彈出視窗 Modal (Subject Notes Modal) -->
+    <div id="subject-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl transform transition-all relative">
+            <button onclick="closeSubjectModal()" class="absolute top-5 right-5 w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div id="modal-badge" class="inline-block px-3 py-1 rounded-xl text-xs font-black mb-3">科目重點</div>
+            <h3 id="modal-title" class="text-2xl font-black text-slate-900 mb-3">標題</h3>
+            <div id="modal-content" class="space-y-3 text-slate-600 text-sm leading-relaxed bg-slate-50 p-4 rounded-2xl border border-slate-100 mb-6">
+                <!-- 動態內容 -->
+            </div>
+            <div class="flex gap-3">
+                <button onclick="closeSubjectModal()" class="flex-1 py-3 rounded-xl border border-slate-200 font-bold text-slate-600 hover:bg-slate-50">關閉預覽</button>
+                <button type="button" onclick="closeSubjectModal(); switchView('quiz');" class="flex-1 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-center">去測驗這科 🚀</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 自訂訊息提示框 (取代 alert) -->
+    <div id="toast-box" class="hidden fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-6 py-4 rounded-2xl shadow-2xl border border-slate-700 flex items-center gap-3 max-w-sm animate-bounce">
+        <span class="text-2xl">🎉</span>
+        <div>
+            <div id="toast-title" class="font-black text-sm text-yellow-300">提示訊息</div>
+            <div id="toast-msg" class="text-xs text-slate-200 mt-0.5">內容</div>
+        </div>
+    </div>
+
+    <!-- JavaScript 互動邏輯 -->
+    <script>
+        // ==========================================
+        // 1. 左側選單分頁切換控制 (免下滑 SPA 導覽)
+        // ==========================================
+        function switchView(viewName) {
+            // 隱藏所有分頁區塊
+            document.querySelectorAll('.app-view').forEach(section => {
+                section.classList.add('hidden');
+            });
+
+            // 顯示目標分頁區塊
+            const targetSection = document.getElementById(`view-${viewName}`);
+            if (targetSection) {
+                targetSection.classList.remove('hidden');
+            }
+
+            // 更新桌面版與手機版左側按鈕高亮狀態
+            document.querySelectorAll('.side-nav-btn[data-view]').forEach(btn => {
+                if (btn.dataset.view === 'booking') return; // 預約按鈕維持專屬橘黃色漸層
+                if (btn.dataset.view === viewName) {
+                    btn.classList.add('bg-blue-600', 'text-white', 'shadow-md', 'shadow-blue-600/20', 'font-black');
+                    btn.classList.remove('text-slate-600', 'hover:bg-blue-50', 'hover:text-blue-600', 'font-bold');
+                } else {
+                    btn.classList.remove('bg-blue-600', 'text-white', 'shadow-md', 'shadow-blue-600/20', 'font-black');
+                    btn.classList.add('text-slate-600', 'hover:bg-blue-50', 'hover:text-blue-600', 'font-bold');
+                }
+            });
+
+            // 若在手機版則自動關閉抽屜選單並捲動至頂部
+            document.getElementById('mobile-menu').classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 手機版漢堡選單開關
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.remove('hidden');
+        });
+
+        function closeMobileMenu(e) {
+            if (e.target.id === 'mobile-menu') {
+                document.getElementById('mobile-menu').classList.add('hidden');
+            }
+        }
+
+        // 自訂 Toast 提示框函式
+        let toastTimeout = null;
+        function showToast(title, msg) {
+            const box = document.getElementById('toast-box');
+            document.getElementById('toast-title').textContent = title;
+            document.getElementById('toast-msg').textContent = msg;
+            box.classList.remove('hidden');
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                box.classList.add('hidden');
+            }, 3500);
+        }
+
+        // ==========================================
+        // 2. 線上程度小測驗題庫與邏輯 (支援南一、翰林、康軒版本)
+        // ==========================================
+        const publisherNames = {
+            all: '全版本綜合',
+            nanyi: '📙 南一版',
+            hanlin: '📗 翰林版',
+            kangxuan: '📘 康軒版'
+        };
+
+        const questionBank = [
+            // 數學
+            {
+                subject: 'math', subjectName: '數學邏輯', grade: ['7', '8', '9'], publisher: ['nanyi', 'kangxuan'],
+                question: '【南一/康軒進度】已知一個二位數，其十位數字與個位數字的和為 11。若將十位數字與個位數字對調，所得的新數比原數大 27，請問原數是多少？',
+                options: ['38', '47', '56', '74'],
+                answer: 1, // 47 -> 對調變 74, 74 - 47 = 27
+                explanation: '設十位數字為 x，個位數字為 y。則 x + y = 11，且 (10y + x) - (10x + y) = 27 → y - x = 3。解聯立得 x = 4, y = 7，故原數為 47！',
+                tag: '二元一次聯立方程式應用'
+            },
+            {
+                subject: 'math', subjectName: '數學邏輯', grade: ['8', '9'], publisher: ['hanlin', 'nanyi'],
+                question: '【翰林/南一進度】在坐標平面上，直線 L 的方程式為 2x - 3y = 6，請問直線 L 不通過哪一個象限？',
+                options: ['第一象限', '第二象限', '第三象限', '第四象限'],
+                answer: 1, // x=0 -> y=-2; y=0 -> x=3，通過一、三、四象限，不通過第二象限
+                explanation: '找兩軸交點：令 x = 0 得 y = -2 (0, -2)；令 y = 0 得 x = 3 (3, 0)。畫圖連接這兩點，直線會經過第一、三、四象限，唯獨「不通過第二象限」！',
+                tag: '直角坐標與二元一次方程式圖形'
+            },
+            {
+                subject: 'math', subjectName: '數學邏輯', grade: ['8', '9'], publisher: ['kangxuan', 'hanlin'],
+                question: '【康軒/翰林進度】利用乘法公式計算 199² - 1 的值，結果與下列哪一個選項相同？',
+                options: ['200 × 198', '199 × 198', '200 × 200', '198 × 198'],
+                answer: 0,
+                explanation: '套用平方差公式 a² - b² = (a + b)(a - b)：199² - 1² = (199 + 1)(199 - 1) = 200 × 198 = 39600，完全不用硬算！',
+                tag: '乘法公式與平方差應用'
+            },
+            // 英文
+            {
+                subject: 'english', subjectName: '英文文法', grade: ['7', '8', '9'], publisher: ['nanyi', 'hanlin', 'kangxuan'],
+                question: 'Look! The kids ______ happily in the park right now. Let’s go join them!',
+                options: ['play', 'played', 'are playing', 'will play'],
+                answer: 2,
+                explanation: '句首出現 "Look!" 且句尾有 "right now"（現在），表示動作正在進行中，因此要使用「現在進行式 (be動詞 + V-ing)」，故選 are playing。',
+                tag: '英文基礎時態判讀'
+            },
+            {
+                subject: 'english', subjectName: '英文文法', grade: ['8', '9'], publisher: ['hanlin', 'kangxuan'],
+                question: '【翰林/康軒進度】Kevin ______ in Kaohsiung since he graduated from junior high school in 2020.',
+                options: ['lives', 'lived', 'has lived', 'is living'],
+                answer: 2,
+                explanation: '看到 "since + 過去時間點"（自從2020年國中畢業以來），表示動作從過去持續到現在，必須使用「現在完成式 (have/has + p.p.)」，主詞 Kevin 為第三人稱單數，故選 has lived。',
+                tag: '現在完成式與 since 用法'
+            },
+            {
+                subject: 'english', subjectName: '英文文法', grade: ['8', '9'], publisher: ['nanyi'],
+                question: '【南一版重點句型】Spending too much time ______ video games is bad for your eyes.',
+                options: ['play', 'to play', 'playing', 'played'],
+                answer: 2,
+                explanation: '南一版必考「花費」句型：人 + spend + 時間/金錢 + (in) V-ing，後方的動詞必須加上 ing，故選 playing！',
+                tag: '南一版 spend + V-ing 句型'
+            },
+            // 自然
+            {
+                subject: 'science', subjectName: '自然理化', grade: ['7', '8', '9'], publisher: ['nanyi', 'hanlin'],
+                question: '【南一/翰林理化】將一個實心鐵球分別放入「純水」與「飽和食鹽水」中，鐵球在兩種液體中皆沉入底部。請問鐵球在哪種液體中所受的「浮力」較大？',
+                options: ['在純水中較大', '在飽和食鹽水中較大', '兩者所受浮力一樣大', '無法比較'],
+                answer: 1,
+                explanation: '鐵球在兩種液體中都是「沉體」，因此排開的液體體積 (V) 都等於鐵球本身體積。根據浮力公式 B = V × D液，食鹽水密度 (D液) 較大，所以鐵球在食鹽水中所受浮力較大！',
+                tag: '理化浮力公式與沉體判斷'
+            },
+            {
+                subject: 'science', subjectName: '自然生物', grade: ['7', '9'], publisher: ['kangxuan', 'nanyi'],
+                question: '【康軒/南一生物】豌豆的高莖 (T) 對矮莖 (t) 為顯性。若將基因型為 Tt 與 tt 的兩株豌豆進行交配，其子代出現「矮莖」的機率為何？',
+                options: ['0%', '25%', '50%', '75%'],
+                answer: 2,
+                explanation: '利用棋盤方格法：Tt 可產生 T 與 t 兩種配子，tt 只產生 t 配子。組合結果為 Tt (高莖) 佔 1/2、tt (矮莖) 佔 1/2，因此子代出現矮莖的機率為 50%！',
+                tag: '生物遺傳與棋盤方格法'
+            },
+            {
+                subject: 'science', subjectName: '自然理化', grade: ['8', '9'], publisher: ['hanlin', 'kangxuan'],
+                question: '【翰林/康軒理化】在化學反應中，關於「催化劑」的敘述，下列何者正確？',
+                options: ['可以增加最後產物的總質量', '反應前後催化劑本身的質量會減少', '可以改變化學反應的速率', '所有化學反應都必須加入催化劑才會發生'],
+                answer: 2,
+                explanation: '催化劑（例如雙氧水製氧加入的二氧化錳）能改變反應速率，但「不會」增加產物總量，且反應前後催化劑的質量與化學性質均不變！',
+                tag: '化學反應速率與催化劑特性'
+            },
+            // 國文
+            {
+                subject: 'chinese', subjectName: '國文素養', grade: ['7', '8', '9'], publisher: ['nanyi'],
+                question: '【南一版選文重點】朱自清〈背影〉一文中，父親買橘子時「顯出努力的樣子」，作者看見父親的背影流下眼淚，這段描寫主要展現了什麼情感？',
+                options: ['對父親行動不便的嫌棄', '體會到父親深沉無私的愛與愧疚感動', '抱怨火車站月台設計不良', '對未來離家求學感到興奮'],
+                answer: 1,
+                explanation: '南一版經典選文〈背影〉透過父親攀爬月台的笨拙動作細節，反襯出父愛的厚重與深沉，讓作者從原本的不耐轉為深深的感動與愧疚。',
+                tag: '南一版〈背影〉課文主旨賞析'
+            },
+            {
+                subject: 'chinese', subjectName: '國文素養', grade: ['7', '8', '9'], publisher: ['hanlin'],
+                question: '【翰林版選文重點】吳晟〈負荷〉一詩中：「只因這是生命中／最沉重／也是最甜蜜的負荷」，詩中的「負荷」指的是什麼？',
+                options: ['工作上的經濟壓力', '對子女的責任與無怨無悔的關愛', '年老體衰的身體病痛', '家鄉農田的繁重農事'],
+                answer: 1,
+                explanation: '翰林版必考新詩〈負荷〉，作者以「沉重」形容養育子女的責任辛勞，以「甜蜜」形容對孩子的愛與期盼，展現父愛的無私。',
+                tag: '翰林版〈負荷〉新詩意象理解'
+            },
+            {
+                subject: 'chinese', subjectName: '國文素養', grade: ['7', '8', '9'], publisher: ['kangxuan'],
+                question: '【康軒版選文重點】宋晶宜〈雅量〉一文中，朋友們對同一塊綠底白方格布料各有不同聯想（棋盤、稿紙、綠豆糕），作者想藉此傳達什麼道理？',
+                options: ['每個人看事情的角度不同，應學會尊重與包容', '買衣服時應該聽從朋友的意見', '食物比下棋和寫作更重要', '意見不合時應該極力說服對方'],
+                answer: 0,
+                explanation: '康軒版經典課文〈雅量〉透過「一塊布料的聯想」帶出人與人之間觀點不同是常態，培養欣賞與包容他人意見的「雅量」。',
+                tag: '康軒版〈雅量〉借物說理技巧'
+            },
+            // 社會
+            {
+                subject: 'social', subjectName: '社會史地', grade: ['7', '8', '9'], publisher: ['nanyi', 'hanlin', 'kangxuan'],
+                question: '台灣夏季常出現午後雷陣雨，這種降雨類型主要屬於下列哪一種？',
+                options: ['地形雨', '鋒面雨', '對流雨', '颱風雨'],
+                answer: 2,
+                explanation: '夏季午後地面受太陽強烈照射，熱空氣迅速上升冷卻凝結，形成雷陣雨（俗稱西北雨），這就是典型的「對流雨」！',
+                tag: '台灣氣候與降雨類型'
+            },
+            {
+                subject: 'social', subjectName: '社會公民', grade: ['8', '9'], publisher: ['nanyi', 'kangxuan'],
+                question: '【南一/康軒公民】小明今年 14 歲（國中二年級），在未經父母同意下，擅自拿壓歲錢去買了一台價值 3 萬元的高階電競筆電。在民法上，這筆買賣契約的效力為何？',
+                options: ['完全有效，因為是花自己的壓歲錢', '無效，未滿 18 歲完全不能買東西', '效力未定，需經法定代理人（父母）承認才有效', '自動失效，店家必須無條件退兩倍金額'],
+                answer: 2,
+                explanation: '7 歲以上未滿 18 歲的未成年人為「限制行為能力人」。購買高價筆電不屬於日常生活所必需，未經法定代理人事前允許所訂立的契約，在民法上屬於「效力未定」！',
+                tag: '民法行為能力與契約效力'
+            }
+        ];
+
+        // 測驗狀態變數
+        let selectedGrade = '7';
+        let selectedPublisher = 'all';
+        let selectedSubject = 'all';
+        let currentQuestions = [];
+        let currentIdx = 0;
+        let score = 0;
+        let wrongTags = [];
+        let hasAnswered = false;
+
+        // 選擇年級按鈕事件
+        document.querySelectorAll('.grade-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.grade-btn').forEach(b => {
+                    b.classList.remove('active', 'border-blue-600', 'bg-blue-600', 'text-white', 'shadow-md');
+                    b.classList.add('border-slate-200', 'bg-white', 'text-slate-700');
+                });
+                btn.classList.add('active', 'border-blue-600', 'bg-blue-600', 'text-white', 'shadow-md');
+                btn.classList.remove('border-slate-200', 'bg-white', 'text-slate-700');
+                selectedGrade = btn.dataset.grade;
+            });
+        });
+
+        // 選擇教科書版本按鈕事件
+        document.querySelectorAll('.pub-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.pub-btn').forEach(b => {
+                    b.classList.remove('active', 'border-emerald-600', 'bg-emerald-600', 'text-white', 'shadow-md', 'font-black');
+                    b.classList.add('border-slate-200', 'bg-white', 'text-slate-700', 'font-bold');
+                });
+                btn.classList.add('active', 'border-emerald-600', 'bg-emerald-600', 'text-white', 'shadow-md', 'font-black');
+                btn.classList.remove('border-slate-200', 'bg-white', 'text-slate-700', 'font-bold');
+                selectedPublisher = btn.dataset.pub;
+            });
+        });
+
+        // 選擇科目按鈕事件
+        document.querySelectorAll('.subj-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.subj-btn').forEach(b => {
+                    b.classList.remove('active', 'border-orange-500', 'bg-orange-50', 'text-orange-700', 'shadow-sm');
+                    b.classList.add('border-slate-200', 'bg-white', 'text-slate-700');
+                });
+                btn.classList.add('active', 'border-orange-500', 'bg-orange-50', 'text-orange-700', 'shadow-sm');
+                btn.classList.remove('border-slate-200', 'bg-white', 'text-slate-700');
+                selectedSubject = btn.dataset.subj;
+            });
+        });
+
+        // 開始測驗
+        document.getElementById('start-quiz-btn').addEventListener('click', () => {
+            // 依版本與科目篩選題目
+            let pool = questionBank;
+            if (selectedPublisher !== 'all') {
+                pool = pool.filter(q => q.publisher.includes(selectedPublisher));
+            }
+            if (selectedSubject !== 'all') {
+                const subjFiltered = pool.filter(q => q.subject === selectedSubject);
+                // 若該版本特定單科題數不足，自動補入同科通用題目確保測驗順暢
+                pool = subjFiltered.length > 0 ? subjFiltered : questionBank.filter(q => q.subject === selectedSubject);
+            }
+            // 隨機打亂並取最多 5 題
+            currentQuestions = [...pool].sort(() => Math.random() - 0.5).slice(0, 5);
+            currentIdx = 0;
+            score = 0;
+            wrongTags = [];
+
+            document.getElementById('quiz-setup').classList.add('hidden');
+            document.getElementById('quiz-result').classList.add('hidden');
+            document.getElementById('quiz-playing').classList.remove('hidden');
+
+            renderQuestion();
+        });
+
+        // 渲染當前題目
+        function renderQuestion() {
+            hasAnswered = false;
+            const q = currentQuestions[currentIdx];
+            const total = currentQuestions.length;
+
+            document.getElementById('quiz-pub-badge').textContent = publisherNames[selectedPublisher];
+            document.getElementById('quiz-badge').textContent = q.subjectName;
+            document.getElementById('quiz-counter').textContent = `${currentIdx + 1} / ${total}`;
+            document.getElementById('quiz-progress-bar').style.width = `${((currentIdx + 1) / total) * 100}%`;
+            document.getElementById('question-text').textContent = `Q${currentIdx + 1}. ${q.question}`;
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            const labels = ['A', 'B', 'C', 'D'];
+            q.options.forEach((optText, idx) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'w-full text-left p-4 rounded-2xl border-2 border-slate-200 hover:border-blue-500 hover:bg-blue-50/50 font-bold text-slate-700 transition-all flex items-center gap-3';
+                btn.innerHTML = `
+                    <span class="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center font-black shrink-0">${labels[idx]}</span>
+                    <span>${optText}</span>
+                `;
+                btn.addEventListener('click', () => handleAnswer(idx, btn));
+                optionsContainer.appendChild(btn);
+            });
+
+            document.getElementById('answer-feedback').classList.add('hidden');
+            document.getElementById('next-question-btn').classList.add('hidden');
+        }
+
+        // 處理作答
+        function handleAnswer(selectedIndex, clickedBtn) {
+            if (hasAnswered) return;
+            hasAnswered = true;
+
+            const q = currentQuestions[currentIdx];
+            const isCorrect = selectedIndex === q.answer;
+            const allOptionBtns = document.getElementById('options-container').querySelectorAll('button');
+
+            allOptionBtns.forEach((btn, idx) => {
+                btn.disabled = true;
+                btn.classList.remove('hover:border-blue-500', 'hover:bg-blue-50/50');
+                if (idx === q.answer) {
+                    btn.classList.remove('border-slate-200');
+                    btn.classList.add('border-emerald-500', 'bg-emerald-50', 'text-emerald-900');
+                } else if (idx === selectedIndex && !isCorrect) {
+                    btn.classList.remove('border-slate-200');
+                    btn.classList.add('border-rose-500', 'bg-rose-50', 'text-rose-900');
+                }
+            });
+
+            const feedbackBox = document.getElementById('answer-feedback');
+            const feedbackTitle = document.getElementById('feedback-title');
+            const feedbackExp = document.getElementById('feedback-explanation');
+
+            feedbackBox.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-500', 'bg-rose-50', 'border-rose-500');
+
+            if (isCorrect) {
+                score += Math.round(100 / currentQuestions.length);
+                addExp(30, '答對測驗題目！');
+                feedbackBox.classList.add('bg-emerald-50', 'border-emerald-500');
+                feedbackTitle.innerHTML = '<span class="text-emerald-700">🎉 答對了！觀念超清晰！(+30 EXP)</span>';
+            } else {
+                wrongTags.push(q.tag);
+                feedbackBox.classList.add('bg-rose-50', 'border-rose-500');
+                feedbackTitle.innerHTML = '<span class="text-rose-700">💡 差一點點！來看看關鍵解析：</span>';
+            }
+
+            feedbackExp.textContent = q.explanation;
+
+            const nextBtn = document.getElementById('next-question-btn');
+            nextBtn.textContent = currentIdx === currentQuestions.length - 1 ? '查看診斷報告 📊' : '下一題 ➔';
+            nextBtn.classList.remove('hidden');
+        }
+
+        // 下一題或顯示結果
+        document.getElementById('next-question-btn').addEventListener('click', () => {
+            if (currentIdx < currentQuestions.length - 1) {
+                currentIdx++;
+                renderQuestion();
+            } else {
+                showQuizResult();
+            }
+        });
+
+        // 放棄測驗返回設定
+        document.getElementById('quit-quiz-btn').addEventListener('click', () => {
+            document.getElementById('quiz-playing').classList.add('hidden');
+            document.getElementById('quiz-setup').classList.remove('hidden');
+        });
+
+        // 再測一次
+        document.getElementById('restart-quiz-btn').addEventListener('click', () => {
+            document.getElementById('quiz-result').classList.add('hidden');
+            document.getElementById('quiz-setup').classList.remove('hidden');
+        });
+
+        // 顯示最終診斷報告
+        function showQuizResult() {
+            document.getElementById('quiz-playing').classList.add('hidden');
+            document.getElementById('quiz-result').classList.remove('hidden');
+
+            // 修正滿分四捨五入誤差
+            const finalScore = wrongTags.length === 0 ? 100 : score;
+            document.getElementById('final-score').textContent = finalScore;
+
+            const rankEl = document.getElementById('result-rank');
+            const adviceEl = document.getElementById('result-advice');
+            const tagsContainer = document.getElementById('weak-points-tags');
+            tagsContainer.innerHTML = '';
+
+            if (finalScore === 100) {
+                rankEl.textContent = '稱號：會考 A++ 滿級分大神 🔥';
+                adviceEl.textContent = '太強了！你對這些核心觀念掌握得非常透徹，建議可以開始挑戰歷屆會考進階素養題，維持手感！';
+                tagsContainer.innerHTML = '<span class="px-3 py-1 rounded-xl bg-emerald-100 text-emerald-700 text-xs font-bold">#觀念零死角</span><span class="px-3 py-1 rounded-xl bg-blue-100 text-blue-700 text-xs font-bold">#適合挑戰高難度素養題</span>';
+            } else if (finalScore >= 60) {
+                rankEl.textContent = '稱號：潛力無窮的準學霸 ⭐';
+                adviceEl.textContent = '你的基礎底子很穩！只要把下面標記出來的幾個小盲點弄通，下次段考成績絕對能直接衝上前三名！';
+                wrongTags.forEach(tag => {
+                    tagsContainer.innerHTML += `<span class="px-3 py-1 rounded-xl bg-orange-100 text-orange-700 text-xs font-bold">📌 建議加強：${tag}</span>`;
+                });
+            } else {
+                rankEl.textContent = '稱號：正在蓄力的逆襲黑馬 🚀';
+                adviceEl.textContent = '別灰心！現在發現不會的地方反而是好事，代表還有超大進步空間。建議透過一對一家教帶你用「圖像化方式」重新建立觀念！';
+                wrongTags.forEach(tag => {
+                    tagsContainer.innerHTML += `<span class="px-3 py-1 rounded-xl bg-rose-100 text-rose-700 text-xs font-bold">🎯 重點補強：${tag}</span>`;
+                });
+            }
+        }
+
+        // ==========================================
+        // 3. 科目互動筆記 Modal 邏輯
+        // ==========================================
+        const subjectNotesData = {
+            chinese: {
+                badge: '國文素養必考攻略',
+                badgeClass: 'bg-rose-100 text-rose-700',
+                title: '📖 文言文秒懂三步驟 ＋ 作文破題法',
+                content: `
+                    <p class="font-bold text-slate-800">1. 文言文翻譯口訣「留、補、換」：</p>
+                    <p>• <strong>留</strong>：人名、地名、朝代保留不翻。<br>• <strong>補</strong>：古文常省略主詞，翻譯時記得把「誰做這件事」補出來！<br>• <strong>換</strong>：單音節詞換成雙音節詞（例如：「走」換成「跑」）。</p>
+                    <p class="font-bold text-slate-800 pt-2">2. 會考作文「鳳頭、豬肚、豹尾」結構：</p>
+                    <p>第一段用「場景描寫」或「名言反問」吸睛，中間兩段舉出親身經歷的轉折細節，結尾昇華到人生體悟，輕鬆拿下五～六級分！</p>
+                `
+            },
+            english: {
+                badge: '英文實戰高分秘笈',
+                badgeClass: 'bg-amber-100 text-amber-700',
+                title: '🔤 國中三大核心時態時間軸記憶法',
+                content: `
+                    <p class="font-bold text-slate-800">1. 看到時間關鍵字直接秒殺選題：</p>
+                    <p>• <strong>every day / usually</strong> ➔ 現在簡單式（注意三單 +s）<br>• <strong>yesterday / ago / last night</strong> ➔ 過去簡單式（動詞變過去式）<br>• <strong>since + 過去時間 / for + 一段時間</strong> ➔ 現在完成式（have/has + p.p.）</p>
+                    <p class="font-bold text-slate-800 pt-2">2. 長篇閱讀測驗技巧：</p>
+                    <p>先看題目問什麼（圈出 Wh- 疑問詞），再回文章掃描關鍵字，做題速度提升 2 倍！</p>
+                `
+            },
+            math: {
+                badge: '數學邏輯解題思維',
+                badgeClass: 'bg-blue-100 text-blue-700',
+                title: '📐 應用題列式四步驟與幾何輔助線',
+                content: `
+                    <p class="font-bold text-slate-800">1. 應用題不再空白的四步驟：</p>
+                    <p>• <strong>Step 1 設未知數</strong>：題目問什麼，就設它為 x。<br>• <strong>Step 2 找等號「=」</strong>：把題目中的「是、為、比...多、共」圈起來，這就是列方程式的關鍵！</p>
+                    <p class="font-bold text-slate-800 pt-2">2. 幾何圖形看到「中點」或「等腰」怎麼辦？</p>
+                    <p>看到等腰三角形，立刻從頂點作「底邊的高」，瞬間切割出兩個全等的直角三角形，畢氏定理馬上派上用場！</p>
+                `
+            },
+            science: {
+                badge: '自然理化圖像筆記',
+                badgeClass: 'bg-emerald-100 text-emerald-700',
+                title: '🧪 莫耳數與濃度換算「三角魔法陣」',
+                content: `
+                    <p class="font-bold text-slate-800">1. 化學計算核心公式串聯：</p>
+                    <p>記住「質量(g) ÷ 分子量 = 莫耳數(mol)」，所有化學反應方程式的係數比，通通等於「莫耳數比」，千萬不要直接拿克數去比！</p>
+                    <p class="font-bold text-slate-800 pt-2">2. 生物光合作用與呼吸作用對照：</p>
+                    <p>植物白天同時進行「光合作用」與「呼吸作用」，晚上沒有光線時，就只剩「呼吸作用」（吸進氧氣、吐出二氧化碳）喔！</p>
+                `
+            },
+            social: {
+                badge: '社會科心智圖整合',
+                badgeClass: 'bg-purple-100 text-purple-700',
+                title: '🌍 台灣歷史大事紀與季風氣候口訣',
+                content: `
+                    <p class="font-bold text-slate-800">1. 台灣氣候「夏西南、冬東北」：</p>
+                    <p>• <strong>夏季吹西南季風</strong>：南部迎風面多雨（高雄、屏東夏季濕潤）。<br>• <strong>冬季吹東北季風</strong>：北部迎風面多雨（基隆雨港、宜蘭冬雨）。</p>
+                    <p class="font-bold text-slate-800 pt-2">2. 歷史素養題解題心法：</p>
+                    <p>先看題幹出現的「年代」或「關鍵人物/條約」，鎖定朝代背景後，就能快速排除不屬於該時代的錯誤選項！</p>
+                `
+            }
+        };
+
+        function openSubjectModal(subjectKey) {
+            const data = subjectNotesData[subjectKey];
+            if (!data) return;
+            const badgeEl = document.getElementById('modal-badge');
+            badgeEl.textContent = data.badge;
+            badgeEl.className = `inline-block px-3 py-1 rounded-xl text-xs font-black mb-3 ${data.badgeClass}`;
+            document.getElementById('modal-title').textContent = data.title;
+            document.getElementById('modal-content').innerHTML = data.content;
+            document.getElementById('subject-modal').classList.remove('hidden');
+        }
+
+        function closeSubjectModal() {
+            document.getElementById('subject-modal').classList.add('hidden');
+        }
+
+        // ==========================================
+        // 4. AI 伴讀解題助教 (串接 Gemini API)
+        // ==========================================
+        const chatHistoryEl = document.getElementById('ai-chat-history');
+        const aiForm = document.getElementById('ai-chat-form');
+        const aiInput = document.getElementById('ai-user-input');
+        const aiSendBtn = document.getElementById('ai-send-btn');
+
+        function fillAiPrompt(text) {
+            aiInput.value = text;
+            aiInput.focus();
+        }
+
+        function appendChatMessage(sender, text, isLoading = false) {
+            const wrapper = document.createElement('div');
+            wrapper.className = sender === 'user' ? 'flex items-start justify-end gap-3' : 'flex items-start gap-3';
+            if (isLoading) wrapper.id = 'ai-loading-bubble';
+
+            if (sender === 'user') {
+                wrapper.innerHTML = `
+                    <div class="bg-blue-600 rounded-2xl rounded-tr-none p-3.5 text-sm text-white leading-relaxed max-w-[85%]">
+                        ${escapeHtml(text)}
+                    </div>
+                `;
+            } else {
+                // 簡易格式化換行與粗體
+                const formattedText = escapeHtml(text)
+                    .replace(/\*\*(.*?)\*\*/g, '<strong class="text-yellow-300">$1</strong>')
+                    .replace(/\n/g, '<br>');
+                wrapper.innerHTML = `
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-400 to-blue-600 flex items-center justify-center text-white font-bold shrink-0">
+                        🤖
+                    </div>
+                    <div class="bg-slate-700/80 rounded-2xl rounded-tl-none p-3.5 text-sm text-slate-100 leading-relaxed max-w-[85%]">
+                        ${isLoading ? '<span class="animate-pulse">小老師正在思考解題步驟中... ✍️</span>' : formattedText}
+                    </div>
+                `;
+            }
+            chatHistoryEl.appendChild(wrapper);
+            chatHistoryEl.scrollTop = chatHistoryEl.scrollHeight;
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        async function fetchGeminiTutorReply(userPrompt) {
+            const apiKey = ""; // 執行環境將自動注入金鑰
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+            const systemPrompt = "你是一位台灣國中全科（國文、英文、數學、自然、社會）的超級家教老師，說話親切、活潑、充滿鼓勵，非常懂得用台灣國中生聽得懂的白話文、生活比喻與條列式步驟來解題。請用繁體中文回答，並適度使用表情符號讓版面活潑易讀，回答長度控制在 250 字以內，重點清晰。";
+
+            const payload = {
+                contents: [{ parts: [{ text: userPrompt }] }],
+                systemInstruction: {
+                    parts: [{ text: systemPrompt }]
+                }
+            };
+
+            // 指數退避重試機制
+            const delays = [1000, 2000, 4000];
+            for (let attempt = 0; attempt <= delays.length; attempt++) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!response.ok) throw new Error('API Error');
+                    const result = await response.json();
+                    const replyText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (replyText) return replyText;
+                    throw new Error('Empty response');
+                } catch (err) {
+                    if (attempt === delays.length) {
+                        return "哎呀，目前連線有點忙碌！不過別擔心，你可以直接預約下方的「免費一對一線上試聽」，讓真人老師親自為你解題喔！😊";
+                    }
+                    await new Promise(res => setTimeout(res, delays[attempt]));
+                }
+            }
+        }
+
+        aiForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const promptText = aiInput.value.trim();
+            if (!promptText) return;
+
+            aiInput.value = '';
+            aiInput.disabled = true;
+            aiSendBtn.disabled = true;
+
+            appendChatMessage('user', promptText);
+            appendChatMessage('ai', '', true);
+
+            const reply = await fetchGeminiTutorReply(promptText);
+
+            const loadingBubble = document.getElementById('ai-loading-bubble');
+            if (loadingBubble) loadingBubble.remove();
+
+            appendChatMessage('ai', reply);
+
+            aiInput.disabled = false;
+            aiSendBtn.disabled = false;
+            aiInput.focus();
+        });
+
+        // ==========================================
+        // 5. 免費試聽預約表單送出
+        // ==========================================
+        document.getElementById('booking-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            showToast('預約成功！🎉', '專屬家教老師將在 24 小時內聯繫你，並傳送免費試聽連結與全科電子筆記！');
+            e.target.reset();
+        });
+
+        // ==========================================
+        // 6. 全站 EXP 經驗值與等級升級系統
+        // ==========================================
+        let userExp = 350;
+        let userLevel = 12;
+
+        function addExp(points, reason) {
+            userExp += points;
+            const newLevel = 10 + Math.floor(userExp / 150);
+            const progressPercent = Math.min(100, Math.round(((userExp % 150) / 150) * 100));
+
+            // 更新導覽列與主視覺數據
+            document.getElementById('nav-exp-text').textContent = `${userExp} EXP`;
+            document.getElementById('nav-exp-bar').style.width = `${progressPercent}%`;
+            document.getElementById('mobile-exp-text').textContent = `${userExp} EXP`;
+            document.getElementById('hero-exp-display').textContent = `${userExp} EXP 能量點數`;
+
+            if (newLevel > userLevel) {
+                userLevel = newLevel;
+                document.getElementById('nav-level-badge').textContent = `LV.${userLevel}`;
+                document.getElementById('mobile-level-text').textContent = `LV.${userLevel}`;
+                document.getElementById('hero-level-title').textContent = `LV.${userLevel} 進階會考戰士`;
+                showToast(`🎊 恭喜升級到 LV.${userLevel}！`, `${reason} 累積獲得 ${userExp} EXP，繼續保持超強學習力！`);
+            } else {
+                showToast(`✨ 獲得 +${points} EXP！`, reason);
+            }
+        }
+
+        // 主視覺每日互動任務打卡切換
+        function toggleDailyTask(btn, expReward) {
+            const isDone = btn.dataset.done === 'true';
+            const titleEl = btn.querySelector('.task-title');
+            const subEl = btn.querySelector('.task-sub');
+            const iconEl = btn.querySelector('.task-icon');
+
+            if (!isDone) {
+                btn.dataset.done = 'true';
+                btn.classList.remove('bg-blue-50/70', 'border-blue-200');
+                btn.classList.add('bg-emerald-50/70', 'border-emerald-200');
+                titleEl.classList.add('line-through', 'opacity-75', 'text-slate-800');
+                titleEl.classList.remove('text-blue-900');
+                subEl.textContent = `已完成！(+${expReward} EXP)`;
+                subEl.classList.remove('text-blue-600');
+                subEl.classList.add('text-emerald-600');
+                iconEl.className = 'fa-solid fa-circle-check text-emerald-500 text-xl task-icon';
+                addExp(expReward, '完成今日學習任務打卡！');
+            } else {
+                btn.dataset.done = 'false';
+                btn.classList.add('bg-blue-50/70', 'border-blue-200');
+                btn.classList.remove('bg-emerald-50/70', 'border-emerald-200');
+                titleEl.classList.remove('line-through', 'opacity-75', 'text-slate-800');
+                titleEl.classList.add('text-blue-900');
+                subEl.textContent = `點擊完成打卡領 +${expReward} EXP！`;
+                subEl.classList.add('text-blue-600');
+                subEl.classList.remove('text-emerald-600');
+                iconEl.className = 'fa-regular fa-circle text-blue-400 text-xl task-icon';
+            }
+
+            // 更新完成百分比徽章
+            const allTasks = document.querySelectorAll('#daily-tasks-list button');
+            const doneCount = Array.from(allTasks).filter(b => b.dataset.done === 'true').length;
+            const pct = Math.round((doneCount / allTasks.length) * 100);
+            document.getElementById('hero-progress-badge').textContent = `進度 ${pct}%`;
+        }
+
+        // ==========================================
+        // 7. 3D 翻轉記憶卡 (Flashcards) 邏輯
+        // ==========================================
+        const flashcardsBank = [
+            { subject: 'english', tag: '🔤 英文高頻片語', front: 'look forward to + V-ing', backTitle: '期待、盼望（後接動名詞 V-ing）', backDesc: '會考必考陷阱！這裡的 to 是介系詞，不是不定詞。\n例句：I look forward to seeing you soon.' },
+            { subject: 'english', tag: '🔤 英文高頻片語', front: 'spend + 時間/金錢 + (in) V-ing', backTitle: '花費時間或金錢做某事', backDesc: '主詞必須是「人」！若是「事物」當主詞，要用 It takes + 人 + 時間 + to V。\n例句：He spent two hours doing his homework.' },
+            { subject: 'math', tag: '📐 數學必背公式', front: '乘法公式：(a + b)(a - b) = ?', backTitle: '平方差公式：a² - b²', backDesc: '超實用速算技巧！例如計算 103 × 97 = (100 + 3)(100 - 3) = 10000 - 9 = 9991。' },
+            { subject: 'math', tag: '📐 數學必背公式', front: '一元二次方程式判別式 D = b² - 4ac', backTitle: '判斷解的個數：D > 0 兩相異實根', backDesc: '• D > 0：兩相異實根\n• D = 0：重根（兩相等實根）\n• D < 0：無實數解' },
+            { subject: 'science', tag: '🧪 理化記憶口訣', front: '浮力公式 B = V排 × D液', backTitle: '浮力 ＝ 排開液體的重量', backDesc: '• 浮體：浮力 B ＝ 物體重量 W\n• 沉體：浮力 B ＝ 物體全部體積 × 液體密度' },
+            { subject: 'science', tag: '🧪 理化記憶口訣', front: '酸鹼指示劑「石蕊試紙」變色口訣', backTitle: '酸紅、鹼藍（中不變）', backDesc: '• 酸性溶液：藍色石蕊試紙變「紅色」\n• 鹼性溶液：紅色石蕊試紙變「藍色」\n• 酚酞指示劑：酸無色、鹼紅色！' },
+            { subject: 'chinese', tag: '📖 國文易錯形音義', front: '「載」浮「載」沉 的讀音與意思', backTitle: '讀音：ㄗㄞˋ｜意思：又、且', backDesc: '「載...載...」在文言文中常作連接詞「又...又...」的意思，例如：載歌載舞（又唱歌又跳舞）。' },
+            { subject: 'chinese', tag: '📖 國文易錯形音義', front: '年齡代稱：「而立之年」與「不惑之年」', backTitle: '而立 ＝ 30 歲｜不惑 ＝ 40 歲', backDesc: '順口溜記憶：志學(15) ➔ 弱冠(20) ➔ 而立(30) ➔ 不惑(40) ➔ 知天命(50) ➔ 耳順(60)。' }
+        ];
+
+        let filteredFlashcards = [...flashcardsBank];
+        let fcIndex = 0;
+        let isFcFlipped = false;
+
+        function renderFlashcard() {
+            const card = filteredFlashcards[fcIndex];
+            const inner = document.getElementById('fc-inner');
+            isFcFlipped = false;
+            inner.classList.remove('rotate-y-180');
+
+            document.getElementById('fc-subject-tag').textContent = card.tag;
+            document.getElementById('fc-counter').textContent = `${fcIndex + 1} / ${filteredFlashcards.length}`;
+            document.getElementById('fc-front-text').textContent = card.front;
+            document.getElementById('fc-back-title').textContent = card.backTitle;
+            document.getElementById('fc-back-desc').innerHTML = card.backDesc.replace(/\n/g, '<br>');
+        }
+
+        function flipFlashcard() {
+            isFcFlipped = !isFcFlipped;
+            const inner = document.getElementById('fc-inner');
+            if (isFcFlipped) {
+                inner.classList.add('rotate-y-180');
+            } else {
+                inner.classList.remove('rotate-y-180');
+            }
+        }
+
+        function nextFlashcard() {
+            fcIndex = (fcIndex + 1) % filteredFlashcards.length;
+            renderFlashcard();
+        }
+
+        function prevFlashcard() {
+            fcIndex = (fcIndex - 1 + filteredFlashcards.length) % filteredFlashcards.length;
+            renderFlashcard();
+        }
+
+        function markFlashcardMastered() {
+            addExp(15, '熟記一張會考必背記憶卡！');
+            nextFlashcard();
+        }
+
+        function filterFlashcards(subj, btnEl) {
+            document.querySelectorAll('.fc-tab').forEach(b => {
+                b.classList.remove('bg-slate-900', 'text-white', 'shadow');
+                b.classList.add('bg-white', 'text-slate-700', 'border', 'border-slate-200');
+            });
+            btnEl.classList.add('bg-slate-900', 'text-white', 'shadow');
+            btnEl.classList.remove('bg-white', 'text-slate-700', 'border', 'border-slate-200');
+
+            filteredFlashcards = subj === 'all' ? [...flashcardsBank] : flashcardsBank.filter(c => c.subject === subj);
+            fcIndex = 0;
+            renderFlashcard();
+        }
+
+        // ==========================================
+        // 8. 專注力番茄鐘 ＋ Web Audio 白噪音合成器
+        // ==========================================
+        let timerSeconds = 25 * 60;
+        let initialTimerSeconds = 25 * 60;
+        let timerInterval = null;
+        let isTimerRunning = false;
+
+        function updateTimerDisplay() {
+            const mins = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
+            const secs = (timerSeconds % 60).toString().padStart(2, '0');
+            document.getElementById('pomodoro-display').textContent = `${mins}:${secs}`;
+        }
+
+        function setTimerMode(minutes, btnEl) {
+            if (isTimerRunning) {
+                clearInterval(timerInterval);
+                isTimerRunning = false;
+                document.getElementById('timer-toggle-btn').innerHTML = '<i class="fa-solid fa-play"></i> 開始專注';
+            }
+            document.querySelectorAll('.timer-mode-btn').forEach(b => {
+                b.classList.remove('bg-emerald-600', 'text-white');
+                b.classList.add('bg-slate-100', 'text-slate-600');
+            });
+            btnEl.classList.add('bg-emerald-600', 'text-white');
+            btnEl.classList.remove('bg-slate-100', 'text-slate-600');
+
+            initialTimerSeconds = minutes * 60;
+            timerSeconds = initialTimerSeconds;
+            updateTimerDisplay();
+            document.getElementById('pomodoro-status').textContent = `已設定 ${minutes} 分鐘專注模式，加油！`;
+        }
+
+        function togglePomodoro() {
+            const btn = document.getElementById('timer-toggle-btn');
+            const statusEl = document.getElementById('pomodoro-status');
+
+            if (isTimerRunning) {
+                clearInterval(timerInterval);
+                isTimerRunning = false;
+                btn.innerHTML = '<i class="fa-solid fa-play"></i> 繼續專注';
+                btn.classList.replace('bg-amber-500', 'bg-emerald-600');
+                statusEl.textContent = '計時已暫停，深呼吸一下再繼續！';
+            } else {
+                isTimerRunning = true;
+                btn.innerHTML = '<i class="fa-solid fa-pause"></i> 暫停計時';
+                btn.classList.replace('bg-emerald-600', 'bg-amber-500');
+                statusEl.textContent = '🔥 專注衝刺中... 請保持心流狀態！';
+
+                timerInterval = setInterval(() => {
+                    if (timerSeconds > 0) {
+                        timerSeconds--;
+                        updateTimerDisplay();
+                    } else {
+                        clearInterval(timerInterval);
+                        isTimerRunning = false;
+                        btn.innerHTML = '<i class="fa-solid fa-play"></i> 開始專注';
+                        btn.classList.replace('bg-amber-500', 'bg-emerald-600');
+                        statusEl.textContent = '🎉 太棒了！完成一輪專注衝刺！';
+                        addExp(100, '完成專注力番茄鐘計時！');
+                        timerSeconds = initialTimerSeconds;
+                        updateTimerDisplay();
+                    }
+                }, 1000);
+            }
+        }
+
+        function resetPomodoro() {
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            timerSeconds = initialTimerSeconds;
+            updateTimerDisplay();
+            const btn = document.getElementById('timer-toggle-btn');
+            btn.innerHTML = '<i class="fa-solid fa-play"></i> 開始專注';
+            btn.classList.remove('bg-amber-500');
+            btn.classList.add('bg-emerald-600');
+            document.getElementById('pomodoro-status').textContent = '時間已重設，隨時準備出發！';
+        }
+
+        // Web Audio API 即時白噪音產生器（免外部音檔）
+        let audioCtx = null;
+        let noiseNode = null;
+        let gainNode = null;
+        let activeSoundType = null;
+
+        function stopAmbientSound() {
+            if (noiseNode) {
+                try { noiseNode.stop(); noiseNode.disconnect(); } catch (e) {}
+                noiseNode = null;
+            }
+            document.getElementById('sound-rain-btn').classList.remove('border-blue-500', 'bg-blue-50');
+            document.getElementById('rain-status').textContent = '點擊開啟';
+            document.getElementById('sound-cafe-btn').classList.remove('border-amber-500', 'bg-amber-50');
+            document.getElementById('cafe-status').textContent = '點擊開啟';
+        }
+
+        function toggleAmbientSound(type) {
+            if (activeSoundType === type) {
+                stopAmbientSound();
+                activeSoundType = null;
+                return;
+            }
+
+            stopAmbientSound();
+            activeSoundType = type;
+
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            // 建立 2 秒緩衝區產生平滑粉紅/布朗噪音
+            const bufferSize = 2 * audioCtx.sampleRate;
+            const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const output = noiseBuffer.getChannelData(0);
+            let lastOut = 0.0;
+            for (let i = 0; i < bufferSize; i++) {
+                const white = Math.random() * 2 - 1;
+                if (type === 'rain') {
+                    // 細雨聲（偏清脆的粉紅噪音）
+                    output[i] = (lastOut + (0.08 * white)) / 1.08;
+                } else {
+                    // 海浪聲（低沉柔和的布朗噪音）
+                    output[i] = (lastOut + (0.02 * white)) / 1.02;
+                }
+                lastOut = output[i];
+                output[i] *= 1.8;
+            }
+
+            noiseNode = audioCtx.createBufferSource();
+            noiseNode.buffer = noiseBuffer;
+            noiseNode.loop = true;
+
+            // 低通濾波器讓聲音更柔和不刺耳
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.value = type === 'rain' ? 1100 : 420;
+
+            gainNode = audioCtx.createGain();
+            gainNode.gain.value = 0.12;
+
+            noiseNode.connect(filter);
+            filter.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            noiseNode.start();
+
+            if (type === 'rain') {
+                document.getElementById('sound-rain-btn').classList.add('border-blue-500', 'bg-blue-50');
+                document.getElementById('rain-status').textContent = '🔊 播放中...';
+            } else {
+                document.getElementById('sound-cafe-btn').classList.add('border-amber-500', 'bg-amber-50');
+                document.getElementById('cafe-status').textContent = '🔊 播放中...';
+            }
+        }
+    </script>
+</body>
+</html>
